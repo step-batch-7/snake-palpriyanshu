@@ -50,6 +50,10 @@ class Snake {
 
     this.positions.push([headX + deltaX, headY + deltaY]);
   }
+
+  grow(){
+    this.positions.unshift(this.previousTail)
+  }
 }
 
 class Food {
@@ -174,7 +178,8 @@ const animateSnake = function(snake, ghostSnake){
 const animateGame = function(game){
   animateSnake(game.snake, game.ghostSnake)
   if(game.hasSnakeEatFood){
-    animateFood(game)
+    animateFood(game);
+    game.snake.grow()
   }
 };
 
