@@ -68,6 +68,7 @@ const NUM_OF_ROWS = 60;
 
 const getRandomNum = (num) => Math.floor(Math.random() * num);
 
+
 class Game {
   constructor(snake, ghostSnake, food) {
     this.snake = snake;
@@ -80,6 +81,13 @@ class Game {
     const colId = getRandomNum(NUM_OF_COLS);
     this.food = new Food(colId, rowId);
   }
+
+  get hasSnakeEatFood(){
+    const [foodColId, FoodRowId] = this.food.position;
+    const snakePos = this.snake.location;
+    const [snakeColId, snakeRowId] = snakePos[snakePos.length - 1];
+    return foodColId == snakeColId && FoodRowId == snakeRowId;
+   }
 }
 
 const GRID_ID = 'grid';
@@ -163,6 +171,13 @@ const animateSnake = function(snake, ghostSnake){
   moveAndDrawSnake(ghostSnake);
 };
 
+const animateGame = function(game){
+  animateSnake(game.snake, game.ghostSnake)
+  if(game.hasSnakeEatFood){
+    animateFood(game)
+  }
+};
+
 const randomlyTurnLeft = function(snake){
 let x = getRandomNum(NUM_OF_COLS);
   if (x > 50) {
@@ -189,9 +204,7 @@ const main = function() {
   const game = new Game(snake, ghostSnake, food);
   setUp(game);
 
-  setInterval(animateSnake, 200, snake, ghostSnake);
-
+  setInterval(animateGame, 200, game);
   setInterval(randomlyTurnLeft, 500, ghostSnake);
 
-  setInterval(animateFood, 1000, game);
 };
