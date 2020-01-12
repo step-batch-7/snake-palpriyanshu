@@ -15,12 +15,11 @@ class Game {
   }
 
   randomlyTurnLeft(){
-  let x = getRandomNum(NUM_OF_COLS);
-  if (x > 50) {
-    this.ghostSnake.turnLeft();
-  };
-};
-
+    let x = getRandomNum(NUM_OF_COLS);
+    if (x > 50) {
+      this.ghostSnake.turnLeft();
+    }
+  }
 
   generateFood(){
     this.previousFood = this.food;
@@ -51,13 +50,23 @@ class Game {
     }
   }
 
-get hasSnakeTouchedWalls(){
-  const head = this.snakeHead;
-  const boundary = [NUM_OF_COLS, NUM_OF_ROWS];
-  return head.some((pos, idx) => pos < 0 || pos >= boundary[idx])
-}  
+  get hasSnakeTouchedWalls(){
+    const head = this.snakeHead;
+    const boundary = [NUM_OF_COLS, NUM_OF_ROWS];
+    return head.some((pos, idx) => pos < 0 || pos >= boundary[idx])
+  } 
+  
+  get hasTouchedGhostSnake(){
+    const [headX, headY] = this.snakeHead;
+    const ghostSnake = this.ghostSnake.location;
+    return ghostSnake.some((pos) => headX == pos[0] && headY == pos[1]);
+  }
 
   get isOver(){
-    return this.snake.hasTouchedItself || this.hasSnakeTouchedWalls;
+    return (
+      this.snake.hasTouchedItself 
+      || this.hasSnakeTouchedWalls 
+      || this.hasTouchedGhostSnake
+    );
   }
 }
