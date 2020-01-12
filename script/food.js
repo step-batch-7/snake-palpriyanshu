@@ -1,5 +1,5 @@
 class Food {
-  constructor(colId,rowId) {
+  constructor(colId, rowId) {
     this.colId = colId;
     this.rowId = rowId;
   }

@@ -26,3 +26,13 @@ h1 {
 .food{
   background-color: red;
 }
+
+#scoreBoard{
+  width: 50px;
+  height: 50px;
+  margin: 0 auto;
+  text-align: center;
+  align-items: center;
+  border: 1px solid black;
+  background-color:#eee;
+}
