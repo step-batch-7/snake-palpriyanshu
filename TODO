@@ -20,5 +20,10 @@
 --DONE-- * Upon eating the food, snake should grow tall
 --DONE-- * Add a scoring mechanism
 
-* If snake touches itself or the walls, the game should be over
+--DONE-- * If snake touches itself the game should be over
+
+--DONE-- * If snake touches the walls, the game should be over
+
+         * If snake touches the ghostSnake, the game should be over
+
 

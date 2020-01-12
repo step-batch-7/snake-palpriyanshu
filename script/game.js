@@ -29,11 +29,16 @@ class Game {
     this.food = new Food(colId, rowId);
   }
 
+  get snakeHead(){
+    const snakePos = this.snake.location;
+    const snakeHead = snakePos[snakePos.length - 1]
+    return snakeHead.slice();
+  }
+
   get hasSnakeEatFood(){
     const [foodColId, FoodRowId] = this.food.position;
-    const snakePos = this.snake.location;
-    const [snakeColId, snakeRowId] = snakePos[snakePos.length - 1];
-    return foodColId === snakeColId && FoodRowId === snakeRowId;
+    const [headColId, headRowId] = this.snakeHead;
+    return foodColId === headColId && FoodRowId === headRowId;
   }
 
   update(){
@@ -46,7 +51,13 @@ class Game {
     }
   }
 
+get hasSnakeTouchedWalls(){
+  const head = this.snakeHead;
+  const boundary = [NUM_OF_COLS, NUM_OF_ROWS];
+  return head.some((pos, idx) => pos < 0 || pos >= boundary[idx])
+}  
+
   get isOver(){
-    return this.snake.hasTouchedItself;
+    return this.snake.hasTouchedItself || this.hasSnakeTouchedWalls;
   }
 }
