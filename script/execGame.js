@@ -35,22 +35,6 @@ const createGrids = function() {
   }
 };
 
-const setUp = function(game){
-  attachEventListeners(game.snake);
-  createGrids();
-  drawSnake(game.snake);
-  drawSnake(game.ghostSnake);
-  drawFood(game.food);
-  displayScores(game.score.scores);
-}
-
-const  animateGame = function(game){
-  game.update()
-  animateSnake(game.snake, game.ghostSnake)
-  animateFood(game);
-  displayScores(game.score.scores)
-};
-
 const displayScores = function(score){
   const scoreBoard = getScoreBoard();
   scoreBoard.innerText = `scores: ${score}`;
@@ -104,6 +88,27 @@ const animateFood = function(game){
   drawFood(game.food)
 };
 
+const setUp = function(game){
+  attachEventListeners(game.snake);
+  createGrids();
+  drawSnake(game.snake);
+  drawSnake(game.ghostSnake);
+  drawFood(game.food);
+  displayScores(game.score.scores);
+}
+
+const endGame = (game, gameUpdate, ghostSnakeMovement) => {
+  clearInterval(gameUpdate);
+  clearInterval(ghostSnakeMovement)
+  document.write(`scores: ${game.score.scores}`)
+};
+
+const drawGame = function(game){
+  animateSnake(game.snake, game.ghostSnake)
+  animateFood(game);
+  displayScores(game.score.scores)
+}
+
 const initSnake = () => {
   const snakePosition = [[40, 25],[41, 25],[42, 25]];
   return  new Snake(snakePosition, new Direction(EAST),'snake'); 
@@ -126,6 +131,13 @@ const main = function() {
   const game = new Game(snake, ghostSnake, food);
   setUp(game);
 
-  setInterval(animateGame, 200, game);
-  setInterval(() => game.randomlyTurnLeft(), 500);
+  const ghostSnakeMovement = setInterval(() => game.randomlyTurnLeft(), 500);
+  const gameUpdate = setInterval(() => {
+    game.update()
+    if(game.isOver){
+      alert('GAME IS OVER')
+      endGame(game, gameUpdate, ghostSnakeMovement);
+      }
+    drawGame(game);
+  }, 200);
 };

@@ -30,4 +30,10 @@ class Snake {
   grow(){
     this.positions.unshift(this.previousTail)
   }
+
+  get hasTouchedItself(){
+    const [headX, headY] = this.positions[this.positions.length - 1];
+    const snakeBody = this.positions.slice(0,-1);
+    return snakeBody.some((pos) => pos[0] == headX && pos[1] == headY);
+  }
 }

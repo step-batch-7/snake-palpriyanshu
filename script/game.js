@@ -45,4 +45,8 @@ class Game {
       this.score.increment(5);
     }
   }
+
+  get isOver(){
+    return this.snake.hasTouchedItself;
+  }
 }
