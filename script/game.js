@@ -3,75 +3,8 @@ const NORTH = 1;
 const WEST = 2;
 const SOUTH = 3;
 
-class Direction {
-  constructor(initialHeading) {
-    this.heading = initialHeading;
-    this.deltas = {};
-    this.deltas[EAST] = [1, 0];
-    this.deltas[WEST] = [-1, 0];
-    this.deltas[NORTH] = [0, -1];
-    this.deltas[SOUTH] = [0, 1];
-  }
-
-  get delta() {
-    return this.deltas[this.heading];
-  }
-
-  turnLeft() {
-    this.heading = (this.heading + 1) % 4;
-  }
-}
-
-class Snake {
-  constructor(positions, direction, type) {
-    this.positions = positions.slice();
-    this.direction = direction;
-    this.type = type;
-    this.previousTail = [0, 0];
-  }
-
-  get location() {
-    return this.positions.slice();
-  }
-
-  get species() {
-    return this.type;
-  }
-
-  turnLeft() {
-    this.direction.turnLeft();
-  }
-
-  move() {
-    const [headX, headY] = this.positions[this.positions.length - 1];
-    this.previousTail = this.positions.shift();
-
-    const [deltaX, deltaY] = this.direction.delta;
-
-    this.positions.push([headX + deltaX, headY + deltaY]);
-  }
-
-  grow(){
-    this.positions.unshift(this.previousTail)
-  }
-}
-
-class Food {
-  constructor(colId,rowId) {
-    this.colId = colId;
-    this.rowId = rowId;
-  }
-
-  get position() {
-    return [this.colId,this.rowId]
-  }
-}
-
 const NUM_OF_COLS = 100;
 const NUM_OF_ROWS = 60;
-
-const getRandomNum = (num) => Math.floor(Math.random() * num);
-
 
 class Game {
   constructor(snake, ghostSnake, food) {
@@ -90,9 +23,11 @@ class Game {
     const [foodColId, FoodRowId] = this.food.position;
     const snakePos = this.snake.location;
     const [snakeColId, snakeRowId] = snakePos[snakePos.length - 1];
-    return foodColId == snakeColId && FoodRowId == snakeRowId;
-   }
+    return foodColId === snakeColId && FoodRowId === snakeRowId;
+  }
 }
+
+const getRandomNum = (num) => Math.floor(Math.random() * num);
 
 const GRID_ID = 'grid';
 
@@ -179,7 +114,11 @@ const animateGame = function(game){
   animateSnake(game.snake, game.ghostSnake)
   if(game.hasSnakeEatFood){
     animateFood(game);
-    game.snake.grow()
+    game.snake.grow();
+    return
+  }
+  if(game.snake.hasTouchItself){
+    $('div').stop();
   }
 };
 
