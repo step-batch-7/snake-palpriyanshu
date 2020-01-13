@@ -97,9 +97,7 @@ const setUp = function(game){
   displayScores(game.score.scores);
 }
 
-const endGame = (game, gameUpdate, ghostSnakeMovement) => {
-  clearInterval(gameUpdate);
-  clearInterval(ghostSnakeMovement)
+const endGame = (game) => {
   document.write(`scores: ${game.score.scores}`)
 };
 
@@ -131,13 +129,16 @@ const main = function() {
   const game = new Game(snake, ghostSnake, food);
   setUp(game);
 
-  const ghostSnakeMovement = setInterval(() => game.randomlyTurnLeft(), 500);
-  const gameUpdate = setInterval(() => {
+  const ghostSnakeMovement = setInterval(() => ghostSnake.randomlyTurnLeft(),500);
+  const id = setInterval(() => {
     game.update()
     if(game.isOver){
+      clearInterval(id);
+      clearInterval(ghostSnakeMovement);
       alert('GAME IS OVER')
-      endGame(game, gameUpdate, ghostSnakeMovement);
-      }
+      endGame(game);
+      return;
+    }
     drawGame(game);
-  }, 200);
+  }, 100);
 };

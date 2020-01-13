@@ -14,12 +14,38 @@ class Snake {
     return this.type;
   }
 
+  get head(){
+    const snakeHead = this.location[this.location.length - 1]
+    return snakeHead.slice();
+  }
+
+  isOnRow(row){
+    const [headX, headY] = this.head;
+    return headY == row;
+  }
+
+  isOnCol(col){
+   const [headX, headY] = this.head;
+   return headX == col; 
+  }
+
   turnLeft() {
     this.direction.turnLeft();
   }
 
+  isInDirection(direction){
+    return this.direction.heading == direction;
+  }
+
+  randomlyTurnLeft(){
+    let x = getRandomNum(NUM_OF_COLS);
+    if (x > 50) {
+      this.turnLeft();
+    }
+  }
+
   move() {
-    const [headX, headY] = this.positions[this.positions.length - 1];
+    const [headX, headY] = this.head;
     this.previousTail = this.positions.shift();
 
     const [deltaX, deltaY] = this.direction.delta;
@@ -32,7 +58,7 @@ class Snake {
   }
 
   get hasTouchedItself(){
-    const [headX, headY] = this.positions[this.positions.length - 1];
+    const [headX, headY] = this.head;
     const snakeBody = this.positions.slice(0,-1);
     return snakeBody.some((pos) => pos[0] == headX && pos[1] == headY);
   }

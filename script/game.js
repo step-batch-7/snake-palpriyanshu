@@ -5,20 +5,7 @@ class Game {
     this.food = food;
     this.previousFood =new Food(0,0);
     this.score = new Score();
-  }
-
-  turnSnake(snake){
-    if(snake === this.snake){
-      return this.snake.turnLeft();
-    }
-    return this.ghostSnake.turnLeft();
-  }
-
-  randomlyTurnLeft(){
-    let x = getRandomNum(NUM_OF_COLS);
-    if (x > 50) {
-      this.ghostSnake.turnLeft();
-    }
+    this.previousHead = [0,0];
   }
 
   generateFood(){
@@ -28,36 +15,39 @@ class Game {
     this.food = new Food(colId, rowId);
   }
 
-  get snakeHead(){
-    const snakePos = this.snake.location;
-    const snakeHead = snakePos[snakePos.length - 1]
-    return snakeHead.slice();
-  }
-
-  get hasSnakeEatFood(){
+  hasSnakeEatFood(snake){
     const [foodColId, FoodRowId] = this.food.position;
-    const [headColId, headRowId] = this.snakeHead;
+    const [headColId, headRowId] = snake.head;
     return foodColId === headColId && FoodRowId === headRowId;
   }
 
   update(){
     this.snake.move();
     this.ghostSnake.move();
-    if(this.hasSnakeEatFood){
+    if(this.hasTouchedBoundary(this.ghostSnake)){
+      this.ghostSnake.turnLeft();
+    }
+    if(this.hasSnakeEatFood(this.snake)){
       this.generateFood();
       this.snake.grow();
       this.score.increment(5);
     }
   }
 
-  get hasSnakeTouchedWalls(){
-    const head = this.snakeHead;
-    const boundary = [NUM_OF_COLS, NUM_OF_ROWS];
-    return head.some((pos, idx) => pos < 0 || pos >= boundary[idx])
-  } 
+  hasTouchedBoundary(snake) {
+    let limits = [NUM_OF_COLS, NUM_OF_ROWS];
+    if(snake == this.ghostSnake){
+      limits =  [NUM_OF_COLS -1, NUM_OF_ROWS-1];
+    }
+    const isTopTouched = snake.isOnRow(0) && snake.isInDirection(NORTH);
+    const isBottomTouched = snake.isOnRow(limits[1]) && snake.isInDirection(SOUTH);
+    const isLeftTouched = snake.isOnCol(0) && snake.isInDirection(WEST);
+    const isRightTouched = snake.isOnCol(limits[0]) && snake.isInDirection(EAST);
+    return isTopTouched || isBottomTouched || isRightTouched || isLeftTouched;
+  }
   
   get hasTouchedGhostSnake(){
-    const [headX, headY] = this.snakeHead;
+    const [headX, headY] = this.snake.head;
     const ghostSnake = this.ghostSnake.location;
     return ghostSnake.some((pos) => headX == pos[0] && headY == pos[1]);
   }
@@ -65,7 +55,7 @@ class Game {
   get isOver(){
     return (
       this.snake.hasTouchedItself 
-      || this.hasSnakeTouchedWalls 
+      || this.hasTouchedBoundary(this.snake)
       || this.hasTouchedGhostSnake
     );
   }

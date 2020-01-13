@@ -24,6 +24,11 @@
 
 --DONE-- * If snake touches the walls, the game should be over
 
-         * If snake touches the ghostSnake, the game should be over
+--DONE-- * If snake touches the ghostSnake, the game should be over
+--DONE-- * ghostSnake should never cross the boundary
+
+ * Give the ghost snake the ability to eat the food.
+ * Provide a special type of food that increases the score without changing the length of the snake.
+
 
 
