@@ -61,9 +61,12 @@ class Snake {
     this.positions.unshift(this.previousTail)
   }
 
-  get hasTouchedItself(){
+  hasTouchedBody(snake){
     const [headX, headY] = this.head;
-    const snakeBody = this.positions.slice(0,-1);
+    let snakeBody = this.location.slice(0,-1);
+    if(snake.species == 'ghost'){
+      snakeBody = snake.location;
+    }
     return snakeBody.some((pos) => pos[0] == headX && pos[1] == headY);
   }
 }

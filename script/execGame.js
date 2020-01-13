@@ -114,7 +114,7 @@ const initSnake = () => {
 
 const initGhostSnake = () => {
   const snakePosition =[[40, 30],[41, 30],[42, 30]];
-  return  new Snake(snakePosition, new Direction(SOUTH),'ghost');
+  return  new Snake(snakePosition, new Direction(EAST),'ghost');
 };
 
 const initFood = () => {

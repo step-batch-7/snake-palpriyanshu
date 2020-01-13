@@ -48,17 +48,11 @@ class Game {
     return isTopTouched || isBottomTouched || isRightTouched || isLeftTouched;
   }
   
-  get hasTouchedGhostSnake(){
-    const [headX, headY] = this.snake.head;
-    const ghostSnake = this.ghostSnake.location;
-    return ghostSnake.some((pos) => headX == pos[0] && headY == pos[1]);
-  }
-
   get isOver(){
     return (
-      this.snake.hasTouchedItself 
+      this.snake.hasTouchedBody(this.snake) 
       || this.hasTouchedBoundary(this.snake)
-      || this.hasTouchedGhostSnake
+      || this.snake.hasTouchedBody(this.ghostSnake)
     );
   }
 }
