@@ -16,9 +16,7 @@ class Game {
   }
 
   hasSnakeEatFood(snake){
-    const [foodColId, FoodRowId] = this.food.position;
-    const [headColId, headRowId] = snake.head;
-    return foodColId === headColId && FoodRowId === headRowId;
+    return snake.hasEatFood(this.food.position);
   }
 
   update(){
@@ -31,6 +29,10 @@ class Game {
       this.generateFood();
       this.snake.grow();
       this.score.increment(5);
+    }
+
+    if(this.hasSnakeEatFood(this.ghostSnake)){
+      this.generateFood();
     }
   }
 

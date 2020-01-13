@@ -44,6 +44,10 @@ class Snake {
     }
   }
 
+  hasEatFood(food){
+    return this.head.every((pos, idx) => pos == food[idx]);
+  }
+
   move() {
     const [headX, headY] = this.head;
     this.previousTail = this.positions.shift();
