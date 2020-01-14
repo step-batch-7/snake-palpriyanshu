@@ -1,3 +1,9 @@
+const getFoodType = function(){
+  const foodType = generateFoodType();
+  const idx = getRandomNum(foodType.length);
+  return foodType[idx];
+}
+
 class Game {
   constructor(snake, ghostSnake, food) {
     this.snake = snake;
@@ -25,10 +31,11 @@ class Game {
     if(this.hasTouchedBoundary(this.ghostSnake)){
       this.ghostSnake.turnLeft();
     }
+
     if(this.hasSnakeEatFood(this.snake)){
       this.score.increment(this.food.getCreditPoints());
+      this.snake.grow(this.food);
       this.generateFood();
-      this.snake.grow();
     }
 
     if(this.hasSnakeEatFood(this.ghostSnake)){
@@ -57,8 +64,3 @@ class Game {
   }
 }
 
-const getFoodType = function(){
-  const foodType = generateFoodType();
-  const idx = getRandomNum(foodType.length);
-  return foodType[idx];
-}
