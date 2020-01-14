@@ -57,9 +57,10 @@ class Game {
   
   get isOver(){
     return (
-      this.snake.hasTouchedBody(this.snake) 
-      || this.hasTouchedBoundary(this.snake)
-      || this.snake.hasTouchedBody(this.ghostSnake)
+      this.snake.hasTouchedBody(this.snake)
+      ||this.snake.hasTouchedBody(this.ghostSnake)
+      ||this.ghostSnake.hasTouchedBody(this.snake) 
+      ||this.hasTouchedBoundary(this.snake)
     );
   }
 }

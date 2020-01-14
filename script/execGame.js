@@ -9,7 +9,7 @@ const NUM_OF_ROWS = 60;
 const getRandomNum = (num) => Math.floor(Math.random() * num);
 
 const GRID_ID = 'grid';
-const SCORE_BOARD = 'scoreBoard';
+const SCORE_BOARD = 'score';
 
 const getGrid = () => document.getElementById(GRID_ID);
 const getScoreBoard =  () => document.getElementById(SCORE_BOARD);

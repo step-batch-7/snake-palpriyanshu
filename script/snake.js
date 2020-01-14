@@ -39,7 +39,7 @@ class Snake {
 
   randomlyTurnLeft(){
     let x = getRandomNum(NUM_OF_COLS);
-    if (x > 50) {
+    if (x > 20) {
       this.turnLeft();
     }
   }
@@ -66,9 +66,9 @@ class Snake {
 
   hasTouchedBody(snake){
     const [headX, headY] = this.head;
-    let snakeBody = this.location.slice(0,-1);
-    if(snake.species == 'ghost'){
-      snakeBody = snake.location;
+    let snakeBody = snake.location;
+    if(this.species === snake.species){
+     snakeBody = this.location.slice(0,-1);
     }
     return snakeBody.some((pos) => pos[0] == headX && pos[1] == headY);
   }
