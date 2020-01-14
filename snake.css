@@ -39,7 +39,7 @@ h1 {
 }
 
 
-#scoreBoard{
+#scoreBar{
   width: 800px;
   height: 50px;
   margin: 0 auto;
@@ -48,6 +48,10 @@ h1 {
   border: 1px solid gray;
   background-color:#eee;
   box-shadow:0 0 5px 2px gray
+}
+
+#heading2{
+  margin: 0 auto;
 }
 
 @keyframes specialFood{
@@ -68,4 +72,21 @@ h1 {
  to{
    background-color: blue; 
   }
+}
+
+.hidden{
+  position: absolute;
+  width: 900px;
+  height: 550px;
+  margin: 0 18vw;
+  align-items: center;
+  border: 1px solid gray;
+  text-align: center;
+  box-shadow:0 0 5px 2px gray;
+  background-color: #eee;
+}
+
+#scoreBoard{
+  display: none;
+  flex-wrap: wrap;
 }

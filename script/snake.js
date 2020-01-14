@@ -57,8 +57,8 @@ class Snake {
     this.positions.push([headX + deltaX, headY + deltaY]);
   }
 
-  grow(food){
-    if(food.name == 'apple'){
+  consume(energyLevel){
+    if(energyLevel === 0){
       return;
     }
     this.positions.unshift(this.previousTail)

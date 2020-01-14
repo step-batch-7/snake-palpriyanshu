@@ -34,7 +34,7 @@ class Game {
 
     if(this.hasSnakeEatFood(this.snake)){
       this.score.increment(this.food.getCreditPoints());
-      this.snake.grow(this.food);
+      this.snake.consume(this.food.energy);
       this.generateFood();
     }
 
@@ -54,7 +54,7 @@ class Game {
     const isRightTouched = snake.isOnCol(limits[0]) && snake.isInDirection(EAST);
     return isTopTouched || isBottomTouched || isRightTouched || isLeftTouched;
   }
-  
+
   get isOver(){
     return (
       this.snake.hasTouchedBody(this.snake)

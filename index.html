@@ -8,15 +8,17 @@
     <script src="script/food.js"></script>
     <script src="script/score.js"></script>
     <script src="script/game.js"></script>
-    <script src="script/execGame.js"></script>
+    <script src="script/gameController.js"></script>
   </head>
 
-  <body onload='main()'>
+  <body>
     <h1>Snake Game</h1>
-    <div id='scoreBoard'>
-      <h2 id='score'></h2>
+    <div class="hidden" id="scoreBoard"> <h2 id="heading2"> GAME OVER </h2></div>
+    <div id="scoreBar">
+      <h2 id="score"></h2>
     </div>
 
-    <div id='grid'></div>
+    <div id="grid"></div>
+
   </body>
 </html>
