@@ -24,8 +24,13 @@ h1 {
 }
 
 .food{
+  background-color: blue;
+}
+
+.apple{
   background-color: red;
 }
+
 
 #scoreBoard{
   width: 50px;

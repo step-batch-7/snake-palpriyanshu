@@ -3,7 +3,7 @@ class Game {
     this.snake = snake;
     this.ghostSnake = ghostSnake;
     this.food = food;
-    this.previousFood =new Food(0,0);
+    this.previousFood =new Food(0, 0, {name: 'food', creditPoints: 5});
     this.score = new Score();
     this.previousHead = [0,0];
   }
@@ -12,11 +12,11 @@ class Game {
     this.previousFood = this.food;
     const rowId = getRandomNum(NUM_OF_ROWS);
     const colId = getRandomNum(NUM_OF_COLS);
-    this.food = new Food(colId, rowId);
+    this.food = new Food(colId, rowId, getFoodType());
   }
 
   hasSnakeEatFood(snake){
-    return snake.hasEatFood(this.food.position);
+    return snake.hasEatFood(this.food.position());
   }
 
   update(){
@@ -26,9 +26,9 @@ class Game {
       this.ghostSnake.turnLeft();
     }
     if(this.hasSnakeEatFood(this.snake)){
+      this.score.increment(this.food.getCreditPoints());
       this.generateFood();
       this.snake.grow();
-      this.score.increment(5);
     }
 
     if(this.hasSnakeEatFood(this.ghostSnake)){
@@ -37,13 +37,13 @@ class Game {
   }
 
   hasTouchedBoundary(snake) {
-    let limits = [NUM_OF_COLS, NUM_OF_ROWS];
+    let limits = [NUM_OF_COLS, NUM_OF_ROWS, -1];
     if(snake == this.ghostSnake){
-      limits =  [NUM_OF_COLS -1, NUM_OF_ROWS-1];
+      limits =  [NUM_OF_COLS -1, NUM_OF_ROWS-1, 0];
     }
-    const isTopTouched = snake.isOnRow(0) && snake.isInDirection(NORTH);
+    const isTopTouched = snake.isOnRow(limits[2]) && snake.isInDirection(NORTH);
     const isBottomTouched = snake.isOnRow(limits[1]) && snake.isInDirection(SOUTH);
-    const isLeftTouched = snake.isOnCol(0) && snake.isInDirection(WEST);
+    const isLeftTouched = snake.isOnCol(limits[2]) && snake.isInDirection(WEST);
     const isRightTouched = snake.isOnCol(limits[0]) && snake.isInDirection(EAST);
     return isTopTouched || isBottomTouched || isRightTouched || isLeftTouched;
   }
@@ -55,4 +55,10 @@ class Game {
       || this.snake.hasTouchedBody(this.ghostSnake)
     );
   }
+}
+
+const getFoodType = function(){
+  const foodType = generateFoodType();
+  const idx = getRandomNum(foodType.length);
+  return foodType[idx];
 }
