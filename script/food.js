@@ -7,10 +7,14 @@ class Food {
     this.energyLevel = type.energyLevel; 
   }
 
-  position() {
+  get position() {
     return [this.colId, this.rowId].slice();
   }
-  
+
+  getName(){
+    return this.name;
+  }
+
   getCreditPoints(){
     return this.creditPoints;
   }

@@ -18,9 +18,7 @@ class Game {
     this.snake = new Snake(snake.position, new Direction(snake.direction), snake.type);
     this.ghostSnake = new Snake(ghostSnake.position, new Direction(ghostSnake.direction), ghostSnake.type);
     this.food = new Food(food.colId, food.rowId, food.type);
-    this.previousFood = new Food(0, 0, {name: 'food', creditPoints: 5});
     this.score = new Score();
-    this.previousHead = [0, 0];
   }
 
   generateFood(){
@@ -30,8 +28,8 @@ class Game {
     this.food = new Food(colId, rowId, getFoodType());
   }
 
-  hasSnakeEatFood(snake){
-    return snake.hasEatFood(this.food.position());
+  didSnakeEatFood(snake){
+    return snake.didEatFood(this.food.position);
   }
 
   randomlyTurnLeft(){
@@ -41,6 +39,13 @@ class Game {
     }
   }
 
+  get foodStatus() {
+    return {
+      location: this.food.position.slice(),
+      name: this.food.getName()
+    };
+  }
+
   update(){
     this.snake.move();
     this.ghostSnake.move();
@@ -48,13 +53,13 @@ class Game {
       this.ghostSnake.turnLeft();
     }
 
-    if(this.hasSnakeEatFood(this.snake)){
+    if(this.didSnakeEatFood(this.snake)){
       this.score.increment(this.food.getCreditPoints());
       this.snake.consume(this.food.energy);
       this.generateFood();
     }
 
-    if(this.hasSnakeEatFood(this.ghostSnake)){
+    if(this.didSnakeEatFood(this.ghostSnake)){
       this.generateFood(); 
     }
   }

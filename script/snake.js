@@ -35,7 +35,7 @@ class Snake {
     return this.direction.heading === direction;
   }
 
-  hasEatFood(food){
+  didEatFood(food){
     return this.head.every((pos, idx) => pos === food[idx]);
   }
 

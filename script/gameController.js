@@ -54,39 +54,24 @@ const drawSnake = function(snake) {
   });
 };
 
-const drawFood = function(food){
-  const [colId, rowId] = food.position();
+const drawFood = function(foodStatus){
+  const [colId, rowId] = foodStatus.location;
   const cell = getCell(colId, rowId);
-  cell.classList.add(food.name);
+  cell.classList.add(foodStatus.name);
 };
 
-const eraseFood = function(food) {
-  const [foodColId, foodRowId] = food.position();
+const eraseFood = function(foodStatus) {
+  const [foodColId, foodRowId] = foodStatus.location;
   const cell = getCell(foodColId, foodRowId);
-  cell.classList.remove(food.name);
+  cell.classList.remove(foodStatus.name);
 };
 
 const handleKeyPress = snake => {
   snake.turnLeft();
 };
 
-const moveAndDrawSnake = function(snake) {
-  eraseTail(snake);
-  drawSnake(snake);
-};
-
 const attachEventListeners = snake => {
   document.body.onkeydown = handleKeyPress.bind(null, snake);
-};
-
-const animateSnake = function(snake, ghostSnake){
-  moveAndDrawSnake(snake);
-  moveAndDrawSnake(ghostSnake);
-};
-
-const animateFood = function(game){
-  eraseFood(game.previousFood);
-  drawFood(game.food);
 };
 
 const displayGameOver = () => {
@@ -99,13 +84,20 @@ const setUp = function(game){
   createGrids();
   drawSnake(game.snake);
   drawSnake(game.ghostSnake);
-  drawFood(game.food);
+  drawFood(game.foodStatus);
   displayScores(game.score.scores);
 };
 
+const erase = function(game){
+  eraseTail(game.snake);
+  eraseTail(game.ghostSnake);
+  eraseFood(game.foodStatus);
+};
+
 const drawGame = function(game){
-  animateSnake(game.snake, game.ghostSnake);
-  animateFood(game);
+  drawSnake(game.snake);
+  drawSnake(game.ghostSnake);
+  drawFood(game.foodStatus);
   displayScores(game.score.scores);
 };
 
@@ -125,6 +117,11 @@ const initGame = function(){
   return new Game(snake, ghostSnake, food);
 };
 
+const endGame = function(updatedGame, ghostSnakeMovement){
+  clearInterval(updatedGame);
+  clearInterval(ghostSnakeMovement);
+};
+
 const main = function() {
   const game = initGame();
   setUp(game);
@@ -133,10 +130,10 @@ const main = function() {
   }
   , 500);
   const updatedGame = setInterval(() => {
+    erase(game);
     game.update();
     if(game.isOver){
-      clearInterval(updatedGame);
-      clearInterval(ghostSnakeMovement);
+      endGame(updatedGame, ghostSnakeMovement);
       displayGameOver(game);
       return;
     }
