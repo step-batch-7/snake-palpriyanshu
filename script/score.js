@@ -4,6 +4,7 @@ class Score{
   }
 
   increment(incrementValue){
-    return this.scores += incrementValue;
+    this.scores = this.scores + incrementValue;
+    return this.scores;
   }
 }

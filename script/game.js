@@ -1,17 +1,26 @@
+const generateFoodType = function(){
+  const type1 = {name: 'food', creditPoints: 5, energyLevel: 1};
+  const type2 = {name: 'food', creditPoints: 5, energyLevel: 1};
+  const type3 = {name: 'apple', creditPoints: 10, energyLevel: 0};
+  const type4 = {name: 'apple', creditPoints: 10, energyLevel: 0};
+  const type5 = {name: 'food', creditPoints: 5, energyLevel: 0};
+  return [type1, type2, type3, type4, type5];
+};
+
 const getFoodType = function(){
   const foodType = generateFoodType();
   const idx = getRandomNum(foodType.length);
   return foodType[idx];
-}
+};
 
 class Game {
   constructor(snake, ghostSnake, food) {
     this.snake = snake;
     this.ghostSnake = ghostSnake;
     this.food = food;
-    this.previousFood =new Food(0, 0, {name: 'food', creditPoints: 5});
+    this.previousFood = new Food(0, 0, {name: 'food', creditPoints: 5});
     this.score = new Score();
-    this.previousHead = [0,0];
+    this.previousHead = [0, 0];
   }
 
   generateFood(){
@@ -23,6 +32,13 @@ class Game {
 
   hasSnakeEatFood(snake){
     return snake.hasEatFood(this.food.position());
+  }
+
+  randomlyTurnLeft(){
+    const headX = getRandomNum(NUM_OF_COLS);
+    if (headX > 20) {
+      this.ghostSnake.turnLeft();
+    }
   }
 
   update(){
@@ -39,14 +55,14 @@ class Game {
     }
 
     if(this.hasSnakeEatFood(this.ghostSnake)){
-      this.generateFood();
+      this.generateFood(); 
     }
   }
 
   hasTouchedBoundary(snake) {
     let limits = [NUM_OF_COLS, NUM_OF_ROWS, -1];
     if(snake == this.ghostSnake){
-      limits =  [NUM_OF_COLS -1, NUM_OF_ROWS-1, 0];
+      limits = [NUM_OF_COLS - 1, NUM_OF_ROWS - 1, 0];
     }
     const isTopTouched = snake.isOnRow(limits[2]) && snake.isInDirection(NORTH);
     const isBottomTouched = snake.isOnRow(limits[1]) && snake.isInDirection(SOUTH);
@@ -58,10 +74,9 @@ class Game {
   get isOver(){
     return (
       this.snake.hasTouchedBody(this.snake)
-      ||this.snake.hasTouchedBody(this.ghostSnake)
-      ||this.ghostSnake.hasTouchedBody(this.snake) 
-      ||this.hasTouchedBoundary(this.snake)
+      || this.snake.hasTouchedBody(this.ghostSnake)
+      || this.ghostSnake.hasTouchedBody(this.snake) 
+      || this.hasTouchedBoundary(this.snake)
     );
   }
 }
-

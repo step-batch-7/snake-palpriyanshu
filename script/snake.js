@@ -15,18 +15,16 @@ class Snake {
   }
 
   get head(){
-    const snakeHead = this.location[this.location.length - 1]
+    const snakeHead = this.location[this.location.length - 1];
     return snakeHead.slice();
   }
 
   isOnRow(row){
-    const [headX, headY] = this.head;
-    return headY == row;
+    return this.head[1] === row;
   }
 
   isOnCol(col){
-   const [headX, headY] = this.head;
-   return headX == col; 
+    return this.head[0] === col; 
   }
 
   turnLeft() {
@@ -34,18 +32,11 @@ class Snake {
   }
 
   isInDirection(direction){
-    return this.direction.heading == direction;
-  }
-
-  randomlyTurnLeft(){
-    let x = getRandomNum(NUM_OF_COLS);
-    if (x > 20) {
-      this.turnLeft();
-    }
+    return this.direction.heading === direction;
   }
 
   hasEatFood(food){
-    return this.head.every((pos, idx) => pos == food[idx]);
+    return this.head.every((pos, idx) => pos === food[idx]);
   }
 
   move() {
@@ -61,15 +52,15 @@ class Snake {
     if(energyLevel === 0){
       return;
     }
-    this.positions.unshift(this.previousTail)
+    this.positions.unshift(this.previousTail);
   }
 
   hasTouchedBody(snake){
     const [headX, headY] = this.head;
     let snakeBody = snake.location;
     if(this.species === snake.species){
-     snakeBody = this.location.slice(0,-1);
+      snakeBody = this.location.slice(0, -1);
     }
-    return snakeBody.some((pos) => pos[0] == headX && pos[1] == headY);
+    return snakeBody.some(([x, y]) => x === headX && y === headY);
   }
 }
