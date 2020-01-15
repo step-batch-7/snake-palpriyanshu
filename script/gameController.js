@@ -54,7 +54,7 @@ const drawSnake = function(snake) {
   });
 };
 
-const drawFood = function(food) {
+const drawFood = function(food){
   const [colId, rowId] = food.position();
   const cell = getCell(colId, rowId);
   cell.classList.add(food.name);
@@ -109,24 +109,18 @@ const drawGame = function(game){
   displayScores(game.score.scores);
 };
 
-const initSnake = () => {
-  const snakePosition = [[40, 25], [41, 25], [42, 25]];
-  return new Snake(snakePosition, new Direction(EAST), 'snake'); 
-};
-
-const initGhostSnake = () => {
-  const snakePosition = [[40, 30], [41, 30], [42, 30]];
-  return new Snake(snakePosition, new Direction(EAST), 'ghost');
-};
-
 const initFood = () => {
   const type = {name: 'food', creditPoints: 5, energyLevel: 1};
-  return new Food(getRandomNum(NUM_OF_COLS), getRandomNum(NUM_OF_ROWS), type);
+  return {colId: getRandomNum(NUM_OF_COLS), 
+    rowId: getRandomNum(NUM_OF_ROWS), 
+    type};
 };
 
 const initGame = function(){
-  const snake = initSnake();
-  const ghostSnake = initGhostSnake();
+  const snake1Position = [[40, 25], [41, 25], [42, 25]];
+  const snake = {position: snake1Position, direction: SOUTH, type: 'snake'}; 
+  const snake2Position = [[40, 30], [41, 30], [42, 30]];
+  const ghostSnake = {position: snake2Position, direction: EAST, type: 'ghost'};
   const food = initFood();
   return new Game(snake, ghostSnake, food);
 };

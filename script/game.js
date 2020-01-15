@@ -15,9 +15,9 @@ const getFoodType = function(){
 
 class Game {
   constructor(snake, ghostSnake, food) {
-    this.snake = snake;
-    this.ghostSnake = ghostSnake;
-    this.food = food;
+    this.snake = new Snake(snake.position, new Direction(snake.direction), snake.type);
+    this.ghostSnake = new Snake(ghostSnake.position, new Direction(ghostSnake.direction), ghostSnake.type);
+    this.food = new Food(food.colId, food.rowId, food.type);
     this.previousFood = new Food(0, 0, {name: 'food', creditPoints: 5});
     this.score = new Score();
     this.previousHead = [0, 0];

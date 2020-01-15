@@ -8,13 +8,9 @@ class Food {
   }
 
   position() {
-    return [this.colId, this.rowId];
+    return [this.colId, this.rowId].slice();
   }
-
-  getName(){
-    return this.name;
-  }
-
+  
   getCreditPoints(){
     return this.creditPoints;
   }
