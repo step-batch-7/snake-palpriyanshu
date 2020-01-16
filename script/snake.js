@@ -1,18 +1,21 @@
 class Snake {
+  #type;
+  #direction;
+  #positions;
   constructor(positions, direction, type) {
-    this.positions = positions.slice();
-    this.direction = direction;
-    this.type = type;
+    this.#positions = positions.slice();
+    this.#direction = direction;
+    this.#type = type;
   }
 
   get location() {
-    return this.positions.slice();
+    return this.#positions.slice();
   }
 
   get snakeStatus(){
     return {
       location: this.location,
-      species: this.type
+      species: this.#type
     };
   }
 
@@ -30,11 +33,11 @@ class Snake {
   }
 
   turnLeft() {
-    this.direction.turnLeft();
+    this.#direction.turnLeft();
   }
 
   isInDirection(direction){
-    return this.direction.heading === direction;
+    return this.#direction.heading === direction;
   }
 
   wasHeadOn(cell){
@@ -43,18 +46,18 @@ class Snake {
 
   move() {
     const [headX, headY] = this.head;
-    this.positions.shift();
+    this.#positions.shift();
 
-    const [deltaX, deltaY] = this.direction.delta;
+    const [deltaX, deltaY] = this.#direction.delta;
 
-    this.positions.push([headX + deltaX, headY + deltaY]);
+    this.#positions.push([headX + deltaX, headY + deltaY]);
   }
 
   growBy(growthFactor){
     if(growthFactor === 0){
       return;
     }
-    this.positions.unshift(this.location[0]);
+    this.#positions.unshift(this.location[0]);
   }
 
   hasTouchedBody(snake){
