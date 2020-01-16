@@ -88,9 +88,8 @@ const displayGameOver = () => {
   scoreBoard.style.display = 'flex';
 };
 
-const endGame = function(updatedGame, ghostSnakeMovement){
-  clearInterval(updatedGame);
-  clearInterval(ghostSnakeMovement);
+const endGame = function(intervals){
+  intervals.forEach((interval) => clearInterval(interval));
 };
 
 const displayScores = function(score){
@@ -99,15 +98,13 @@ const displayScores = function(score){
 };
 
 const drawGame = function(game){
-  drawSnake(game.status[0]);
-  drawSnake(game.status[1]);
+  game.status.forEach((status) => drawSnake(status));
   drawFood(game.foodStatus);
   displayScores(game.getScores());
 };
 
 const erase = function(game){
-  eraseTail(game.status[0]);
-  eraseTail(game.status[1]);
+  game.status.forEach((status) => eraseTail(status));
   eraseFood(game.foodStatus);
 };
 
@@ -115,7 +112,7 @@ const updateGame = function(game, updatedGame, ghostSnakeMovement){
   erase(game);
   game.update();
   if(game.isOver){
-    endGame(updatedGame, ghostSnakeMovement);
+    endGame([updatedGame, ghostSnakeMovement]);
     displayGameOver(game);
     return;
   }
@@ -125,10 +122,7 @@ const updateGame = function(game, updatedGame, ghostSnakeMovement){
 const setUp = function(game){
   attachEventListeners(game);
   createGrids(game.grid);
-  drawSnake(game.status[0]);
-  drawSnake(game.status[1]);
-  drawFood(game.foodStatus);
-  displayScores(game.getScores());
+  drawGame(game);
 };
 
 const initGame = function(){
