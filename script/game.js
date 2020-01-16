@@ -1,10 +1,7 @@
 const generateFoodType = function(){
-  const type1 = {name: 'food', creditPoints: 5, growthFactor: 1};
-  const type2 = {name: 'food', creditPoints: 5, growthFactor: 1};
-  const type3 = {name: 'apple', creditPoints: 10, growthFactor: 0};
-  const type4 = {name: 'apple', creditPoints: 10, growthFactor: 0};
-  const type5 = {name: 'food', creditPoints: 5, growthFactor: 0};
-  return [type1, type2, type3, type4, type5];
+  const type1 = {name: 'food', points: 5, growthFactor: 1};
+  const type2 = {name: 'apple', points: 10, growthFactor: 0};
+  return [type1, type2, type2, type1, type1];
 };
 
 const getFoodType = function(){
@@ -44,11 +41,12 @@ class Game {
     }
   }
 
+  get status(){
+    return [this.snake.snakeStatus, this.ghostSnake.snakeStatus];
+  }
+
   get foodStatus() {
-    return {
-      location: this.food.position.slice(),
-      name: this.food.getName()
-    };
+    return this.food.status;
   }
 
   update(){
@@ -59,7 +57,7 @@ class Game {
     }
 
     if(this.didSnakeEatFood(this.snake)){
-      this.score.increment(this.food.getCreditPoints());
+      this.score.increment(this.food.creditPoints);
       this.snake.growBy(this.food.growth);
       this.generateFood();
     }

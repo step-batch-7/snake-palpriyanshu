@@ -31,7 +31,7 @@ const createGrids = function(gridSize) {
 
 const initFood = function(gridSize){
   const [cols, rows] = gridSize;
-  const type = {name: 'food', creditPoints: 5, growthFactor: 1};
+  const type = {name: 'food', points: 5, growthFactor: 1};
   return {colId: getRandomNum(cols), rowId: getRandomNum(rows), type};
 };
 
@@ -45,16 +45,16 @@ const initGhostSnake = function(){
   return {position: snakePosition, direction: EAST, type: 'ghost'};
 };
 
-const eraseTail = function(snakeStatus) {
-  const [colId, rowId] = snakeStatus.location[0];
+const eraseTail = function(status) {
+  const [colId, rowId] = status.location[0];
   const cell = getCell(colId, rowId);
-  cell.classList.remove(snakeStatus.species);
+  cell.classList.remove(status.species);
 };
 
-const drawSnake = function(snakeStatus) {
-  snakeStatus.location.forEach(([colId, rowId]) => {
+const drawSnake = function(status) {
+  status.location.forEach(([colId, rowId]) => {
     const cell = getCell(colId, rowId);
-    cell.classList.add(snakeStatus.species);
+    cell.classList.add(status.species);
   });
 };
 
@@ -94,15 +94,15 @@ const displayScores = function(score){
 };
 
 const drawGame = function(game){
-  drawSnake(game.snake.snakeStatus);
-  drawSnake(game.ghostSnake.snakeStatus);
+  drawSnake(game.status[0]);
+  drawSnake(game.status[1]);
   drawFood(game.foodStatus);
   displayScores(game.score.scores);
 };
 
 const erase = function(game){
-  eraseTail(game.snake.snakeStatus);
-  eraseTail(game.ghostSnake.snakeStatus);
+  eraseTail(game.status[0]);
+  eraseTail(game.status[1]);
   eraseFood(game.foodStatus);
 };
 
@@ -120,8 +120,8 @@ const updateGame = function(game, updatedGame, ghostSnakeMovement){
 const setUp = function(game){
   attachEventListeners(game.snake);
   createGrids(game.grid);
-  drawSnake(game.snake.snakeStatus);
-  drawSnake(game.ghostSnake.snakeStatus);
+  drawSnake(game.status[0]);
+  drawSnake(game.status[1]);
   drawFood(game.foodStatus);
   displayScores(game.score.scores);
 };
