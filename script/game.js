@@ -1,9 +1,9 @@
 const generateFoodType = function(){
-  const type1 = {name: 'food', creditPoints: 5, energyLevel: 1};
-  const type2 = {name: 'food', creditPoints: 5, energyLevel: 1};
-  const type3 = {name: 'apple', creditPoints: 10, energyLevel: 0};
-  const type4 = {name: 'apple', creditPoints: 10, energyLevel: 0};
-  const type5 = {name: 'food', creditPoints: 5, energyLevel: 0};
+  const type1 = {name: 'food', creditPoints: 5, growthFactor: 1};
+  const type2 = {name: 'food', creditPoints: 5, growthFactor: 1};
+  const type3 = {name: 'apple', creditPoints: 10, growthFactor: 0};
+  const type4 = {name: 'apple', creditPoints: 10, growthFactor: 0};
+  const type5 = {name: 'food', creditPoints: 5, growthFactor: 0};
   return [type1, type2, type3, type4, type5];
 };
 
@@ -14,17 +14,22 @@ const getFoodType = function(){
 };
 
 class Game {
-  constructor(snake, ghostSnake, food) {
+  constructor(gridSize, snake, ghostSnake, food) {
+    [this.cols, this.rows] = gridSize.slice();
     this.snake = new Snake(snake.position, new Direction(snake.direction), snake.type);
     this.ghostSnake = new Snake(ghostSnake.position, new Direction(ghostSnake.direction), ghostSnake.type);
     this.food = new Food(food.colId, food.rowId, food.type);
     this.score = new Score();
   }
 
+  get grid(){
+    return [this.cols, this.rows].slice();
+  }
+
   generateFood(){
     this.previousFood = this.food;
-    const rowId = getRandomNum(NUM_OF_ROWS);
-    const colId = getRandomNum(NUM_OF_COLS);
+    const rowId = getRandomNum(this.rows);
+    const colId = getRandomNum(this.cols);
     this.food = new Food(colId, rowId, getFoodType());
   }
 
@@ -33,7 +38,7 @@ class Game {
   }
 
   randomlyTurnLeft(){
-    const headX = getRandomNum(NUM_OF_COLS);
+    const headX = getRandomNum(this.cols);
     if (headX > 20) {
       this.ghostSnake.turnLeft();
     }
@@ -55,7 +60,7 @@ class Game {
 
     if(this.didSnakeEatFood(this.snake)){
       this.score.increment(this.food.getCreditPoints());
-      this.snake.consume(this.food.energy);
+      this.snake.growBy(this.food.growth);
       this.generateFood();
     }
 
@@ -65,9 +70,9 @@ class Game {
   }
 
   hasTouchedBoundary(snake) {
-    let limits = [NUM_OF_COLS, NUM_OF_ROWS, -1];
+    let limits = [this.cols, this.rows, -1];
     if(snake == this.ghostSnake){
-      limits = [NUM_OF_COLS - 1, NUM_OF_ROWS - 1, 0];
+      limits = [this.cols - 1, this.rows - 1, 0];
     }
     const isTopTouched = snake.isOnRow(limits[2]) && snake.isInDirection(NORTH);
     const isBottomTouched = snake.isOnRow(limits[1]) && snake.isInDirection(SOUTH);

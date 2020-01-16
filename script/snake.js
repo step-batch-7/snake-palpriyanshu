@@ -50,8 +50,8 @@ class Snake {
     this.positions.push([headX + deltaX, headY + deltaY]);
   }
 
-  consume(energyLevel){
-    if(energyLevel === 0){
+  growBy(growthFactor){
+    if(growthFactor === 0){
       return;
     }
     this.positions.unshift(this.location[0]);

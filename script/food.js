@@ -4,7 +4,7 @@ class Food {
     this.rowId = rowId;
     this.name = type.name;
     this.creditPoints = type.creditPoints; 
-    this.energyLevel = type.energyLevel; 
+    this.growthFactor = type.growthFactor; 
   }
 
   get position() {
@@ -19,7 +19,7 @@ class Food {
     return this.creditPoints;
   }
 
-  get energy() {
-    return this.energyLevel;
+  get growth() {
+    return this.growthFactor;
   }
 }

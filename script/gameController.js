@@ -1,15 +1,7 @@
-const EAST = 0;
-const NORTH = 1;
-const WEST = 2;
-const SOUTH = 3;
-
-const NUM_OF_COLS = 100;
-const NUM_OF_ROWS = 60;
-
-const getRandomNum = (num) => Math.floor(Math.random() * num);
-
 const GRID_ID = 'grid';
 const SCORE_BAR = 'score';
+
+const getRandomNum = (num) => Math.floor(Math.random() * num);
 
 const getGrid = () => document.getElementById(GRID_ID);
 const getScoreBar = () => document.getElementById(SCORE_BAR);
@@ -27,13 +19,30 @@ const createCell = function(grid, colId, rowId) {
   grid.appendChild(cell);
 };
 
-const createGrids = function() {
+const createGrids = function(gridSize) {
+  const [numOfCols, numOfRows] = gridSize;
   const grid = getGrid();
-  for (let row = 0; row < NUM_OF_ROWS; row++) {
-    for (let col = 0; col < NUM_OF_COLS; col++) {
+  for (let row = 0; row < numOfRows; row++) {
+    for (let col = 0; col < numOfCols; col++) {
       createCell(grid, col, row);
     }
   }
+};
+
+const initFood = function(gridSize){
+  const [cols, rows] = gridSize;
+  const type = {name: 'food', creditPoints: 5, growthFactor: 1};
+  return {colId: getRandomNum(cols), rowId: getRandomNum(rows), type};
+};
+
+const initSnake = function(){
+  const snakePosition = [[40, 25], [41, 25], [42, 25]];
+  return {position: snakePosition, direction: SOUTH, type: 'snake'};
+};
+
+const initGhostSnake = function(){
+  const snakePosition = [[40, 30], [41, 30], [42, 30]];
+  return {position: snakePosition, direction: EAST, type: 'ghost'};
 };
 
 const eraseTail = function(snakeStatus) {
@@ -67,13 +76,6 @@ const handleKeyPress = snake => {
 
 const attachEventListeners = snake => {
   document.body.onkeydown = handleKeyPress.bind(null, snake);
-};
-
-const initFood = () => {
-  const type = {name: 'food', creditPoints: 5, energyLevel: 1};
-  return {colId: getRandomNum(NUM_OF_COLS), 
-    rowId: getRandomNum(NUM_OF_ROWS), 
-    type};
 };
 
 const displayGameOver = () => {
@@ -117,7 +119,7 @@ const updateGame = function(game, updatedGame, ghostSnakeMovement){
 
 const setUp = function(game){
   attachEventListeners(game.snake);
-  createGrids();
+  createGrids(game.grid);
   drawSnake(game.snake.snakeStatus);
   drawSnake(game.ghostSnake.snakeStatus);
   drawFood(game.foodStatus);
@@ -125,12 +127,11 @@ const setUp = function(game){
 };
 
 const initGame = function(){
-  const snake1Position = [[40, 25], [41, 25], [42, 25]];
-  const snake = {position: snake1Position, direction: SOUTH, type: 'snake'}; 
-  const snake2Position = [[40, 30], [41, 30], [42, 30]];
-  const ghostSnake = {position: snake2Position, direction: EAST, type: 'ghost'};
-  const food = initFood();
-  return new Game(snake, ghostSnake, food);
+  const gridSize = [100, 60];
+  const snake = initSnake();
+  const ghostSnake = initGhostSnake();
+  const food = initFood(gridSize);
+  return new Game(gridSize, snake, ghostSnake, food);
 };
 
 const main = function() {
