@@ -70,12 +70,12 @@ const eraseFood = function(foodStatus) {
   cell.classList.remove(foodStatus.name);
 };
 
-const handleKeyPress = snake => {
-  snake.turnLeft();
+const handleKeyPress = game => {
+  game.turnSnake();
 };
 
-const attachEventListeners = snake => {
-  document.body.onkeydown = handleKeyPress.bind(null, snake);
+const attachEventListeners = game => {
+  document.body.onkeydown = handleKeyPress.bind(null, game);
 };
 
 const displayGameOver = () => {
@@ -97,7 +97,7 @@ const drawGame = function(game){
   drawSnake(game.status[0]);
   drawSnake(game.status[1]);
   drawFood(game.foodStatus);
-  displayScores(game.score.scores);
+  displayScores(game.getScores());
 };
 
 const erase = function(game){
@@ -118,12 +118,12 @@ const updateGame = function(game, updatedGame, ghostSnakeMovement){
 };
 
 const setUp = function(game){
-  attachEventListeners(game.snake);
+  attachEventListeners(game);
   createGrids(game.grid);
   drawSnake(game.status[0]);
   drawSnake(game.status[1]);
   drawFood(game.foodStatus);
-  displayScores(game.score.scores);
+  displayScores(game.getScores());
 };
 
 const initGame = function(){
