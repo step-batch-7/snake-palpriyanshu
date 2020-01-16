@@ -36,6 +36,10 @@ class Snake {
     this.#direction.turnLeft();
   }
 
+  turnRight() {
+    this.#direction.turnRight();
+  }
+
   isInDirection(direction){
     return this.#direction.heading === direction;
   }

@@ -33,8 +33,12 @@ class Game {
     return this.#score.scores;
   }
 
-  turnSnake(){
+  turnSnakeLeft(){
     return this.#snake.turnLeft();
+  }
+
+  turnSnakeRight(){
+    return this.#snake.turnRight();
   }
 
   generateFood(){

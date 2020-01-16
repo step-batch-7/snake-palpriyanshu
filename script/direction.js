@@ -20,4 +20,9 @@ class Direction {
   turnLeft() {
     this.heading = (this.heading + 1) % 4;
   }
+
+  turnRight() {
+    this.heading = (this.heading + 3) % 4;
+  }
+
 }

@@ -70,8 +70,13 @@ const eraseFood = function(foodStatus) {
   cell.classList.remove(foodStatus.name);
 };
 
-const handleKeyPress = game => {
-  game.turnSnake();
+const handleKeyPress = (game) => {
+  const keyValue = event.keyCode;
+  if(keyValue === 37){
+    game.turnSnakeLeft();
+    return;
+  }
+  game.turnSnakeRight();
 };
 
 const attachEventListeners = game => {
