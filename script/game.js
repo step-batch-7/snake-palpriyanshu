@@ -29,7 +29,7 @@ class Game {
   }
 
   didSnakeEatFood(snake){
-    return snake.didEatFood(this.food.position);
+    return snake.wasHeadOn(this.food.position);
   }
 
   randomlyTurnLeft(){

@@ -36,21 +36,16 @@ const createGrids = function() {
   }
 };
 
-const displayScores = function(score){
-  const scoreBar = getScoreBar();
-  scoreBar.innerText = `scores: ${score}`;
-};
-
-const eraseTail = function(snake) {
-  const [colId, rowId] = snake.previousTail;
+const eraseTail = function(snakeStatus) {
+  const [colId, rowId] = snakeStatus.location[0];
   const cell = getCell(colId, rowId);
-  cell.classList.remove(snake.species);
+  cell.classList.remove(snakeStatus.species);
 };
 
-const drawSnake = function(snake) {
-  snake.location.forEach(([colId, rowId]) => {
+const drawSnake = function(snakeStatus) {
+  snakeStatus.location.forEach(([colId, rowId]) => {
     const cell = getCell(colId, rowId);
-    cell.classList.add(snake.species);
+    cell.classList.add(snakeStatus.species);
   });
 };
 
@@ -74,38 +69,59 @@ const attachEventListeners = snake => {
   document.body.onkeydown = handleKeyPress.bind(null, snake);
 };
 
-const displayGameOver = () => {
-  const scoreBoard = getScoreBoard();
-  scoreBoard.style.display = 'flex';
-};
-
-const setUp = function(game){
-  attachEventListeners(game.snake);
-  createGrids();
-  drawSnake(game.snake);
-  drawSnake(game.ghostSnake);
-  drawFood(game.foodStatus);
-  displayScores(game.score.scores);
-};
-
-const erase = function(game){
-  eraseTail(game.snake);
-  eraseTail(game.ghostSnake);
-  eraseFood(game.foodStatus);
-};
-
-const drawGame = function(game){
-  drawSnake(game.snake);
-  drawSnake(game.ghostSnake);
-  drawFood(game.foodStatus);
-  displayScores(game.score.scores);
-};
-
 const initFood = () => {
   const type = {name: 'food', creditPoints: 5, energyLevel: 1};
   return {colId: getRandomNum(NUM_OF_COLS), 
     rowId: getRandomNum(NUM_OF_ROWS), 
     type};
+};
+
+const displayGameOver = () => {
+  const scoreBoard = getScoreBoard();
+  scoreBoard.style.display = 'flex';
+};
+
+const endGame = function(updatedGame, ghostSnakeMovement){
+  clearInterval(updatedGame);
+  clearInterval(ghostSnakeMovement);
+};
+
+const displayScores = function(score){
+  const scoreBar = getScoreBar();
+  scoreBar.innerText = `scores: ${score}`;
+};
+
+const drawGame = function(game){
+  drawSnake(game.snake.snakeStatus);
+  drawSnake(game.ghostSnake.snakeStatus);
+  drawFood(game.foodStatus);
+  displayScores(game.score.scores);
+};
+
+const erase = function(game){
+  eraseTail(game.snake.snakeStatus);
+  eraseTail(game.ghostSnake.snakeStatus);
+  eraseFood(game.foodStatus);
+};
+
+const updateGame = function(game, updatedGame, ghostSnakeMovement){
+  erase(game);
+  game.update();
+  if(game.isOver){
+    endGame(updatedGame, ghostSnakeMovement);
+    displayGameOver(game);
+    return;
+  }
+  drawGame(game);
+};
+
+const setUp = function(game){
+  attachEventListeners(game.snake);
+  createGrids();
+  drawSnake(game.snake.snakeStatus);
+  drawSnake(game.ghostSnake.snakeStatus);
+  drawFood(game.foodStatus);
+  displayScores(game.score.scores);
 };
 
 const initGame = function(){
@@ -117,27 +133,17 @@ const initGame = function(){
   return new Game(snake, ghostSnake, food);
 };
 
-const endGame = function(updatedGame, ghostSnakeMovement){
-  clearInterval(updatedGame);
-  clearInterval(ghostSnakeMovement);
-};
-
 const main = function() {
   const game = initGame();
   setUp(game);
+
   const ghostSnakeMovement = setInterval(() => {
     return game.randomlyTurnLeft();
   }
   , 500);
+
   const updatedGame = setInterval(() => {
-    erase(game);
-    game.update();
-    if(game.isOver){
-      endGame(updatedGame, ghostSnakeMovement);
-      displayGameOver(game);
-      return;
-    }
-    drawGame(game);
+    updateGame(game, updatedGame, ghostSnakeMovement);
   }, 100);
 };
 

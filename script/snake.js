@@ -3,15 +3,17 @@ class Snake {
     this.positions = positions.slice();
     this.direction = direction;
     this.type = type;
-    this.previousTail = [0, 0];
   }
 
   get location() {
     return this.positions.slice();
   }
 
-  get species() {
-    return this.type;
+  get snakeStatus(){
+    return {
+      location: this.location,
+      species: this.type
+    };
   }
 
   get head(){
@@ -35,13 +37,13 @@ class Snake {
     return this.direction.heading === direction;
   }
 
-  didEatFood(food){
-    return this.head.every((pos, idx) => pos === food[idx]);
+  wasHeadOn(cell){
+    return this.head.every((pos, idx) => pos === cell[idx]);
   }
 
   move() {
     const [headX, headY] = this.head;
-    this.previousTail = this.positions.shift();
+    this.positions.shift();
 
     const [deltaX, deltaY] = this.direction.delta;
 
@@ -52,13 +54,13 @@ class Snake {
     if(energyLevel === 0){
       return;
     }
-    this.positions.unshift(this.previousTail);
+    this.positions.unshift(this.location[0]);
   }
 
   hasTouchedBody(snake){
     const [headX, headY] = this.head;
     let snakeBody = snake.location;
-    if(this.species === snake.species){
+    if(this.snakeStatus.species === snake.snakeStatus.species){
       snakeBody = this.location.slice(0, -1);
     }
     return snakeBody.some(([x, y]) => x === headX && y === headY);
