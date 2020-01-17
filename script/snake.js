@@ -41,7 +41,7 @@ class Snake {
   }
 
   isInDirection(direction){
-    return this.#direction.heading === direction;
+    return this.#direction.currentDirection === direction;
   }
 
   wasHeadOn(cell){
