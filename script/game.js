@@ -30,7 +30,7 @@ class Game {
   }
 
   getScores(){
-    return this.#score.scores;
+    return this.#score.currentScores;
   }
 
   turnSnakeLeft(){
