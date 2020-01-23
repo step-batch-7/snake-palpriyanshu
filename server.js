@@ -1,6 +1,6 @@
 const {Server} = require('net');
 const {stdout, stderr} = require('process');
-const {readFileSync} = require('fs');
+const {readFileSync, existsSync} = require('fs');
 
 const STATIC_FOLDER = `${__dirname}/public`;
 
@@ -26,12 +26,15 @@ const getUrlAndExtn = function(resource) {
   }
 
   const [, extn] = url.split('.');
-  return {type: lookUp[extn], url: `${STATIC_FOLDER}/${url}`};
+  return {type: lookUp[extn], url: `${STATIC_FOLDER}${url}`};
 };
 
 const generateResourceRes = function(resource) {
   const {type, url} = getUrlAndExtn(resource);
-  const content = readFileSync(`${url}`, 'utf8');
+  let content = '';
+  if (existsSync(url)) {
+    content = readFileSync(`${url}`, 'utf8');
+  }
   return [
     'HTTP/1.0 200 OK',
     `content-type: ${type}`,
