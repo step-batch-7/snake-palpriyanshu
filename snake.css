@@ -8,7 +8,7 @@ h1 {
   margin: 0 auto;
   flex-wrap: wrap;
   border: 1px solid gray;
-  box-shadow:0 0 5px 2px gray;
+  box-shadow: 0 0 5px 2px gray;
 }
 
 .cell {
@@ -25,68 +25,69 @@ h1 {
   background-color: gray;
 }
 
-.food{
+.food {
   animation: food 2s;
   animation-iteration-count: infinite;
   animation-direction: alternate;
   border-radius: 50%;
 }
 
-.apple{
+.apple {
   animation: specialFood 2s;
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
 
-
-#scoreBar{
+#scoreBar {
   width: 800px;
   height: 50px;
   margin: 0 auto;
   text-align: center;
   align-items: center;
   border: 1px solid gray;
-  background-color:#eee;
-  box-shadow:0 0 5px 2px gray
+  background-color: #eee;
+  box-shadow: 0 0 5px 2px gray;
 }
 
-#heading2{
+#heading2 {
   margin: 0 auto;
 }
 
-@keyframes specialFood{
+@keyframes specialFood {
   from {
     background-color: red;
     box-shadow: 0 0 7px 4px red;
   }
- to{
-   background-color: red; 
+  to {
+    background-color: red;
   }
 }
 
-@keyframes food{
+@keyframes food {
   from {
     background-color: blue;
     box-shadow: 0 0 4px 2px blue;
   }
- to{
-   background-color: blue; 
+  to {
+    background-color: blue;
   }
 }
 
-.hidden{
+.hidden {
   position: absolute;
-  width: 900px;
-  height: 550px;
+  top: 120px;
+  left: 60px;
+  width: 800px;
+  height: 478px;
   margin: 0 18vw;
   align-items: center;
   border: 1px solid gray;
   text-align: center;
-  box-shadow:0 0 5px 2px gray;
+  box-shadow: 0 0 5px 2px gray;
   background-color: #eee;
 }
 
-#scoreBoard{
+#scoreBoard {
   display: none;
   flex-wrap: wrap;
 }
