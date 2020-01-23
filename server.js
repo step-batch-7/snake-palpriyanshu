@@ -2,6 +2,8 @@ const {Server} = require('net');
 const {stdout, stderr} = require('process');
 const {readFileSync} = require('fs');
 
+const STATIC_FOLDER = `${__dirname}/public`;
+
 const badRequestResponse = function() {
   return [
     'HTTP/1.0 404 file not found ',
@@ -14,21 +16,25 @@ const badRequestResponse = function() {
 
 const getUrlAndExtn = function(resource) {
   let url = resource;
-  const lookUp = {js: 'javascript', css: 'css', html: 'html'};
+  const lookUp = {
+    js: 'application/javascript',
+    css: 'text/css',
+    html: 'text/html'
+  };
   if (url === '/') {
-    url = 'index.html';
+    url = '/html/index.html';
   }
 
   const [, extn] = url.split('.');
-  return {type: lookUp[extn], url};
+  return {type: lookUp[extn], url: `${STATIC_FOLDER}/${url}`};
 };
 
 const generateResourceRes = function(resource) {
   const {type, url} = getUrlAndExtn(resource);
-  const content = readFileSync(`./${url}`, 'utf8');
+  const content = readFileSync(`${url}`, 'utf8');
   return [
     'HTTP/1.0 200 OK',
-    `content-type: text/${type}`,
+    `content-type: ${type}`,
     `content-length: ${content.length}`,
     '',
     content
