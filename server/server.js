@@ -1,30 +1,9 @@
 const {Server} = require('net');
 const {readFileSync, existsSync} = require('fs');
+const Request = require('./request.js');
+const Response = require('./response.js');
 
-class Request {
-  constructor(method, url) {
-    this.method = method;
-    this.url = url;
-  }
-
-  static parse(requestText) {
-    const [request] = requestText.split('\n');
-    const [method, url, protocol] = request.split(' ');
-    const req = new Request(method, url);
-    console.warn(req);
-    return req;
-  }
-
-  get resource() {
-    return this.url;
-  }
-
-  set resource(address) {
-    this.url = address;
-  }
-}
-
-const STATIC_FOLDER = `${__dirname}/public`;
+const STATIC_FOLDER = `/${__dirname}/../public`;
 const CONTENT_TYPE = {
   js: 'application/javascript',
   css: 'text/css',
@@ -54,39 +33,6 @@ const fileHandler = function(req) {
   }
   return () => new Response();
 };
-
-class Response {
-  constructor() {
-    this.protocol = 'HTTP/1.0';
-    this.statusCode = 404;
-    this.msg = 'not found';
-    this.headers = [
-      {key: 'content-length', value: 0},
-      {key: 'content-type', value: 'text/plain'}
-    ];
-  }
-
-  setHeader(key, value) {
-    const header = this.headers.find(header => header.key === key);
-    if (header) {
-      header.value = value;
-    } else {
-      this.headers.push({key, value});
-    }
-  }
-
-  generateHeaderText() {
-    const lines = this.headers.map(header => `${header.key}: ${header.value}`);
-    return lines.join('\r\n');
-  }
-
-  writeTo(writable) {
-    writable.write(`${this.protocol} ${this.statusCode} ${this.msg}\n`);
-    writable.write(this.generateHeaderText());
-    writable.write('\r\n\r\n');
-    this.body && writable.write(this.body);
-  }
-}
 
 const respondOnConnect = function(socket) {
   const remote = `${socket.remoteAddress}: ${socket.remotePort}`;
