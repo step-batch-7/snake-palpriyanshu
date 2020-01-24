@@ -1,86 +1,119 @@
 const {Server} = require('net');
-const {stdout, stderr} = require('process');
 const {readFileSync, existsSync} = require('fs');
 
+class Request {
+  constructor(method, url) {
+    this.method = method;
+    this.url = url;
+  }
+
+  static parse(requestText) {
+    const [request] = requestText.split('\n');
+    const [method, url, protocol] = request.split(' ');
+    const req = new Request(method, url);
+    console.warn(req);
+    return req;
+  }
+
+  get resource() {
+    return this.url;
+  }
+
+  set resource(address) {
+    this.url = address;
+  }
+}
+
 const STATIC_FOLDER = `${__dirname}/public`;
-
-const badRequestResponse = function() {
-  return [
-    'HTTP/1.0 404 file not found ',
-    'content-type: text/html',
-    'content-length: 0',
-    '',
-    ''
-  ].join('\n');
+const CONTENT_TYPE = {
+  js: 'application/javascript',
+  css: 'text/css',
+  html: 'text/html'
 };
 
-const getUrlAndExtn = function(resource) {
-  let url = resource;
-  const lookUp = {
-    js: 'application/javascript',
-    css: 'text/css',
-    html: 'text/html'
-  };
-  if (url === '/') {
-    url = '/html/index.html';
+const serveStaticFiles = function(req) {
+  const [, extn] = req.resource.split('.');
+  const contentType = CONTENT_TYPE[extn];
+  const content = readFileSync(`${req.resource}`, 'utf8');
+  const res = new Response();
+  res.setHeader('content-type', contentType);
+  res.setHeader('content-length', content.length);
+  res.statusCode = 200;
+  res.msg = 'OK';
+  res.body = content;
+  return res;
+};
+
+const fileHandler = function(req) {
+  if (req.resource === '/') {
+    req.resource = '/html/index.html';
+  }
+  req.resource = `${STATIC_FOLDER}${req.resource}`;
+  if (req.method === 'GET' && existsSync(req.resource)) {
+    return serveStaticFiles;
+  }
+  return () => new Response();
+};
+
+class Response {
+  constructor() {
+    this.protocol = 'HTTP/1.0';
+    this.statusCode = 404;
+    this.msg = 'not found';
+    this.headers = [
+      {key: 'content-length', value: 0},
+      {key: 'content-type', value: 'text/plain'}
+    ];
   }
 
-  const [, extn] = url.split('.');
-  return {type: lookUp[extn], url: `${STATIC_FOLDER}${url}`};
-};
-
-const generateResourceRes = function(resource) {
-  const {type, url} = getUrlAndExtn(resource);
-  let content = '';
-  if (existsSync(url)) {
-    content = readFileSync(`${url}`, 'utf8');
+  setHeader(key, value) {
+    const header = this.headers.find(header => header.key === key);
+    if (header) {
+      header.value = value;
+    } else {
+      this.headers.push({key, value});
+    }
   }
-  return [
-    'HTTP/1.0 200 OK',
-    `content-type: ${type}`,
-    `content-length: ${content.length}`,
-    '',
-    content
-  ].join('\n');
-};
 
-const generateResponseText = function(method, resource) {
-  if (method === 'GET') {
-    return generateResourceRes(resource);
+  generateHeaderText() {
+    const lines = this.headers.map(header => `${header.key}: ${header.value}`);
+    return lines.join('\r\n');
   }
-  return badRequestResponse();
-};
 
-const handleText = function(text) {
-  const [request] = text.split('\n');
-  const [method, resource, protocol] = request.split(' ');
-  stdout.write(`${protocol.slice(0, -1)} ${method} 200 OK`);
-  return {method, resource};
-};
+  writeTo(writable) {
+    writable.write(`${this.protocol} ${this.statusCode} ${this.msg}\n`);
+    writable.write(this.generateHeaderText());
+    writable.write('\r\n\r\n');
+    this.body && writable.write(this.body);
+  }
+}
 
 const respondOnConnect = function(socket) {
-  const remote = {address: socket.remoteAddress, port: socket.remotePort};
-  'new connection', remote;
+  const remote = `${socket.remoteAddress}: ${socket.remotePort}`;
+  console.warn('new connection', remote);
   socket.setEncoding('utf8');
+  socket.on('close', hadErr =>
+    console.error(`${remote} closed ${hadErr ? 'with error' : ''}`)
+  );
+  socket.on('error', err => console.warn('socket error', err));
+  socket.on('drain', () => console.log(`${remote} drained`));
+  socket.on('end', () => console.warn(remote, 'disconnected'));
   socket.on('data', text => {
-    const {method, resource} = handleText(text);
-    socket.write(generateResponseText(method, resource));
+    console.warn(`${remote} data:\n`);
+    const req = Request.parse(text);
+    const handler = fileHandler(req);
+    const res = handler(req);
+    res.writeTo(socket);
   });
-  socket.on('end', () =>
-    stderr.write(`${JSON.stringify(remote)}\ndisconnected`)
-  );
-  socket.on('error', () =>
-    stderr.write(`${JSON.stringify(remote)}\nsomething went wrong`)
-  );
 };
 
 const main = function() {
   const server = new Server();
-  server.on('listening', () => {
-    stdout.write(`start listening\n ${JSON.stringify(server.address())}`);
-  });
-
+  server.on('error', err => console.error('server error', err));
   server.on('connection', respondOnConnect);
+  server.on('listening', () => {
+    console.log('start listening', server.address());
+  });
   server.listen(4000);
 };
 
